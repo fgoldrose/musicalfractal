@@ -51,9 +51,9 @@ function tone (type, pitch, time, duration) {
 function freqToCol (freq, max_depth) {
 
     // jumping an octave on each recursive call, and starting on the highest step
-    highest_adjusted = Math.pow(2,4) * 110 * 15/8 - 110
+    highest_adjusted = Math.pow(2,4) * 55 * 15/8 - 55
     
-    freq_adjusted = freq - 110
+    freq_adjusted = freq - 55
     return freq_adjusted / highest_adjusted * 255
 }
 
@@ -122,6 +122,9 @@ function generateRecursive(steps_list, scale, base_pitch, cur_step_list, startti
     }
 }
 
+document.getElementById('stop').addEventListener('click', function() {
+    location.reload()
+})
 
 document.getElementById('start').addEventListener('click', function() {
     ctx.resume()
@@ -137,12 +140,12 @@ document.getElementById('start').addEventListener('click', function() {
 
     let tonelen = document.getElementById('speed').value || 0.1
     let starttime = ctx.currentTime
-    let startFreq = step(110, start_step)
+    let startFreq = step(55, start_step)
     
     let melodies = []
     let osc_list = []
 
-    let soundtypes = ['sine', 'square', 'sawtooth']
+    let soundtypes = ['square', 'sawtooth','sine']
 
     for(let j = 0; j < 3; j++){
         let melody = []
