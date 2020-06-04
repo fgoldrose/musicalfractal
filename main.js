@@ -140,7 +140,7 @@ document.getElementById('start').addEventListener('click', function() {
     let start_step = Math.floor(Math.random() * 12)
     let depth = document.getElementById('depth').value || 4
 
-    let tonelen = 0.15
+    let tonelen = 0.05
     let starttime = ctx.currentTime
     let startFreq = step(110, start_step)
     
