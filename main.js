@@ -123,29 +123,26 @@ function generateRecursive(steps_list, scale, base_pitch, cur_step_list, startti
 }
 
 
-const scales =
-[[ 0, 2, 4, 5, 7, 9, 11 ],
-[0, 2, 3, 5, 7, 8, 10]
-]
-
-
-document.getElementById('stop').addEventListener('click', function() {
-    location.reload()
-})
-
 document.getElementById('start').addEventListener('click', function() {
     ctx.resume()
+
+    let scales =
+    [[ 0, 2, 4, 5, 7, 9, 11 ],
+    [0, 2, 3, 5, 7, 8, 10]
+    ]
 
     let scale = scales[Math.floor(Math.random() * scales.length)]
     let start_step = Math.floor(Math.random() * 12)
     let depth = document.getElementById('depth').value || 4
 
-    let tonelen = 0.05
+    let tonelen = document.getElementById('speed').value || 0.1
     let starttime = ctx.currentTime
     let startFreq = step(110, start_step)
     
     let melodies = []
     let osc_list = []
+
+    let soundtypes = ['sine', 'square', 'sawtooth']
 
     for(let j = 0; j < 3; j++){
         let melody = []
@@ -155,14 +152,14 @@ document.getElementById('start').addEventListener('click', function() {
         console.log('melody', melody)
         melodies.push(melody)
 
-        let t = tone('sine', startFreq, starttime, Math.pow(4, depth) * tonelen)
+        let t = tone(soundtypes[j], startFreq, starttime, Math.pow(4, depth) * tonelen)
         osc_list.push(t[0])
     }
 
     let new_div = document.createElement('div')
     new_div.style.width = "500px"
     new_div.style.height = "500px"
-    document.body.appendChild(new_div)
+    document.getElementById('rec').appendChild(new_div)
 
     setTimeout(function() {
         new_div.remove()

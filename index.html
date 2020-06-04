@@ -5,12 +5,19 @@
     <title>AlgoMuzak</title>
   </head>
   <body>
-    <section></section>
-    <label width="20px">Recursion depth</label>
-    <input type="number" id="depth" value=4>
+    <div style = "text-align: center; font-family: Arial">
+    <div id = "rec" style ="width: 500px; height:500px; border: 2px solid black; margin:0 auto"></div>
     <br>
-    <button id='start'>Create Melody</button>
-    <button id='stop'>Stop</button>
+    <div style = "width: fit-content; margin: 0 auto; text-align: right" >
+    <label style = "font-size: 15px">Recursion depth:</label>
+    <input type="number" id="depth" value=4 style="width:50px">
+    <br>
+    <label style = "font-size: 15px">Speed:</label>
+    <input type="number" step= "0.05" id="speed" value=0.15 style="width:50px">
+    <br>
+    <button id="start">Go</button>
+    </div>
     <script src="main.js"></script>
+  </div>
   </body>
 </html>
