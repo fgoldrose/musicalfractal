@@ -128,6 +128,7 @@ document.getElementById('stop').addEventListener('click', function() {
 
 document.getElementById('start').addEventListener('click', function() {
     ctx.resume()
+    document.getElementById('rec').innerHTML = ""
 
     let scales =
     [[ 0, 2, 4, 5, 7, 9, 11 ],
@@ -145,8 +146,6 @@ document.getElementById('start').addEventListener('click', function() {
     let melodies = []
     let osc_list = []
 
-    let soundtypes = ['square', 'sawtooth','sine']
-
     for(let j = 0; j < 3; j++){
         let melody = []
         for(let i= 0; i < 4; i++){
@@ -155,7 +154,7 @@ document.getElementById('start').addEventListener('click', function() {
         console.log('melody', melody)
         melodies.push(melody)
 
-        let t = tone(soundtypes[j], startFreq, starttime, Math.pow(4, depth) * tonelen)
+        let t = tone('sine', startFreq, starttime, Math.pow(4, depth) * tonelen)
         osc_list.push(t[0])
     }
 
@@ -164,10 +163,7 @@ document.getElementById('start').addEventListener('click', function() {
     new_div.style.height = "500px"
     document.getElementById('rec').appendChild(new_div)
 
-    setTimeout(function() {
-        new_div.remove()
-    },Math.pow(4, depth) * tonelen * 1000);
-
+    
     generateRecursive(melodies, scale, startFreq, [0,0,0], starttime, 0, depth, tonelen, osc_list, new_div, 250, depth)
 
 
