@@ -1,15 +1,16 @@
 const ctx = new (window.AudioContext || window.webkitAudioContext)()
 const fft = new AnalyserNode(ctx, { fftSize: 2048 })
 
-let divs = []
+let divstodraw = []
 
 function setup(){
+    noCanvas()
     frameRate(60)
 }
 
 function draw(){
-    while (divs.length > 0 && divs[0][0] <= ctx.currentTime + 8/1000){
-        divs.shift()[1].style.visibility = "visible"
+    while (divstodraw.length > 0 && divstodraw[0][0] <= ctx.currentTime + 8/1000){
+        divstodraw.shift()[1].style.visibility = "visible"
     }
 }
 
@@ -54,8 +55,10 @@ function tone (type, pitch, time, duration) {
     return [osc, lvl]
 }
 
-
-
+let scales = [
+        [0, 2, 4, 5, 7, 9, 11 ],
+        [0, 2, 3, 5, 7, 8, 10]
+    ]
 
 // Map frequency to color, scaling the lowest possible frequency to 0
 // and the highest possible frequency (which depends on recursive depth) to 255
@@ -70,8 +73,7 @@ function freqToCol (freq, max_depth) {
 
 
 
-function generateRecursive(steps_list, scale, base_pitch, cur_step_list, starttime, additionaltime, depth, notelen, osc_list, parent_div, div_size, max_depth) {
-    let time = starttime + additionaltime
+function generateRecursive(steps_list, scale, base_pitch, cur_step_list, time, depth, notelen, osc_list, parent_div, div_size, max_depth) {
 
     if (depth == 1){
         for (let s = 0; s < steps_list[0].length ; s++){
@@ -99,7 +101,7 @@ function generateRecursive(steps_list, scale, base_pitch, cur_step_list, startti
                                          "," + Math.floor(freqToCol(freqs[1], max_depth))  + 
                                          "," + Math.floor(freqToCol(freqs[2], max_depth))  + ")"
             new_div.style.visibility = "hidden"
-            divs.push([time + s*notelen, new_div])
+            divstodraw.push([time + s*notelen, new_div])
         }
     }
     else {
@@ -121,8 +123,7 @@ function generateRecursive(steps_list, scale, base_pitch, cur_step_list, startti
                         scale,
                         base_pitch,
                         new_cur_steps,
-                        starttime,
-                        additionaltime + Math.pow(steps_list[0].length, depth-1) * notelen * s,
+                        time + Math.pow(steps_list[0].length, depth-1) * notelen * s,
                         depth-1, 
                         notelen,
                         osc_list,
@@ -141,11 +142,6 @@ document.getElementById('stop').addEventListener('click', function() {
 document.getElementById('start').addEventListener('click', function() {
     ctx.resume()
     document.getElementById('rec').innerHTML = ""
-
-    let scales =
-    [[ 0, 2, 4, 5, 7, 9, 11 ],
-    [0, 2, 3, 5, 7, 8, 10]
-    ]
 
     let scale = scales[Math.floor(Math.random() * scales.length)]
     let start_step = Math.floor(Math.random() * 12)
@@ -175,5 +171,5 @@ document.getElementById('start').addEventListener('click', function() {
     new_div.style.height = "500px"
     document.getElementById('rec').appendChild(new_div)
     
-    generateRecursive(melodies, scale, startFreq, [0,0,0], starttime, 0, depth, tonelen, osc_list, new_div, 250, depth)
+    generateRecursive(melodies, scale, startFreq, [0,0,0], starttime, depth, tonelen, osc_list, new_div, 250, depth)
 })
