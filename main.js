@@ -1,6 +1,17 @@
 const ctx = new (window.AudioContext || window.webkitAudioContext)()
 const fft = new AnalyserNode(ctx, { fftSize: 2048 })
 
+let divs = []
+
+function setup(){
+    frameRate(60)
+}
+
+function draw(){
+    while (divs.length > 0 && divs[0][0] <= ctx.currentTime + 8/1000){
+        divs.shift()[1].style.visibility = "visible"
+    }
+}
 
 function step( rootFreq, steps ) {
     let ratios = [
@@ -51,7 +62,7 @@ function tone (type, pitch, time, duration) {
 function freqToCol (freq, max_depth) {
 
     // jumping an octave on each recursive call, and starting on the highest step
-    highest_adjusted = Math.pow(2,4) * 55 * 15/8 - 55
+    highest_adjusted = Math.pow(2,max_depth) * 55 * 15/8 - 55
     
     freq_adjusted = freq - 55
     return freq_adjusted / highest_adjusted * 255
@@ -61,7 +72,8 @@ function freqToCol (freq, max_depth) {
 
 function generateRecursive(steps_list, scale, base_pitch, cur_step_list, starttime, additionaltime, depth, notelen, osc_list, parent_div, div_size, max_depth) {
     let time = starttime + additionaltime
-    if (depth == 1){  
+
+    if (depth == 1){
         for (let s = 0; s < steps_list[0].length ; s++){
 
             let freqs = []
@@ -80,16 +92,15 @@ function generateRecursive(steps_list, scale, base_pitch, cur_step_list, startti
             new_div.style.width = div_size.toString() + "px"
             new_div.style.height = div_size.toString() + "px"
             new_div.style.float = "left"
+            parent_div.appendChild(new_div)
+
             
             new_div.style.background = "rgb(" + Math.floor(freqToCol(freqs[0], max_depth)) + 
                                          "," + Math.floor(freqToCol(freqs[1], max_depth))  + 
                                          "," + Math.floor(freqToCol(freqs[2], max_depth))  + ")"
-            setTimeout(function(){
-                parent_div.appendChild(new_div)
-            }, 1000* (additionaltime + s*notelen))
+            new_div.style.visibility = "hidden"
+            divs.push([time + s*notelen, new_div])
         }
-
-        
     }
     else {
         for (let s = 0; s < steps_list[0].length ; s++){
@@ -105,7 +116,7 @@ function generateRecursive(steps_list, scale, base_pitch, cur_step_list, startti
             new_div.style.height = div_size.toString() + "px"
             new_div.style.float = "left"
             parent_div.appendChild(new_div)
-            
+
             generateRecursive(steps_list,
                         scale,
                         base_pitch,
@@ -118,6 +129,7 @@ function generateRecursive(steps_list, scale, base_pitch, cur_step_list, startti
                         new_div,
                         div_size / 2,
                         max_depth)
+           
         }
     }
 }
@@ -140,7 +152,7 @@ document.getElementById('start').addEventListener('click', function() {
     let depth = document.getElementById('depth').value || 4
 
     let tonelen = document.getElementById('speed').value || 0.1
-    let starttime = ctx.currentTime
+    let starttime = ctx.currentTime + 0.5
     let startFreq = step(55, start_step)
     
     let melodies = []
@@ -162,9 +174,6 @@ document.getElementById('start').addEventListener('click', function() {
     new_div.style.width = "500px"
     new_div.style.height = "500px"
     document.getElementById('rec').appendChild(new_div)
-
     
     generateRecursive(melodies, scale, startFreq, [0,0,0], starttime, 0, depth, tonelen, osc_list, new_div, 250, depth)
-
-
 })
