@@ -1,7 +1,6 @@
 const ctx = new (window.AudioContext || window.webkitAudioContext)()
 const fft = new AnalyserNode(ctx, { fftSize: 2048 })
 
-
 function step( rootFreq, steps ) {
     let ratios = [
         1,      // unison ( 1/1 )       // C
@@ -44,14 +43,12 @@ function tone (type, pitch, time, duration) {
 }
 
 
-
-
 // Map frequency to color, scaling the lowest possible frequency to 0
 // and the highest possible frequency (which depends on recursive depth) to 255
 function freqToCol (freq, max_depth) {
 
     // jumping an octave on each recursive call, and starting on the highest step
-    highest_adjusted = Math.pow(2,4) * 55 * 15/8 - 55
+    highest_adjusted = Math.pow(2,max_depth) * 55 * 15/8 - 55
     
     freq_adjusted = freq - 55
     return freq_adjusted / highest_adjusted * 255
