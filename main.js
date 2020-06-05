@@ -77,12 +77,16 @@ function generateRecursive(steps_list, scale, base_pitch, cur_step_list, startti
             new_div.style.width = div_size.toString() + "px"
             new_div.style.height = div_size.toString() + "px"
             new_div.style.float = "left"
+            new_div.style.visibility = "hidden"
+
             
             new_div.style.background = "rgb(" + Math.floor(freqToCol(freqs[0], max_depth)) + 
                                          "," + Math.floor(freqToCol(freqs[1], max_depth))  + 
                                          "," + Math.floor(freqToCol(freqs[2], max_depth))  + ")"
+            parent_div.appendChild(new_div)
+
             setTimeout(function(){
-                parent_div.appendChild(new_div)
+                new_div.style.visibility = "visible"
             }, 1000* (additionaltime + s*notelen))
         }
 
